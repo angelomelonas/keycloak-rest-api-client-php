@@ -92,10 +92,15 @@ abstract class ClientBase implements ClientInterface
 
         $tokens = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
 
-        return [
+        $result = [
             'access_token' => $tokens['access_token'],
-            'refresh_token' => $tokens['refresh_token'],
         ];
+
+        if (isset($tokens['refresh_token'])) {
+            $result['refresh_token'] = $tokens['refresh_token'];
+        }
+
+        return $result;
     }
 
     abstract protected function getEndpointUrl(): string;

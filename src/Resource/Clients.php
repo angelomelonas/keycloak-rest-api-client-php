@@ -44,6 +44,20 @@ class Clients extends Resource
         );
     }
 
+    public function create(string $realm, ClientRepresentation $client): void
+    {
+        $this->commandExecutor->executeCommand(
+            new Command(
+                '/admin/realms/{realm}/clients',
+                Method::POST,
+                [
+                    'realm' => $realm,
+                ],
+                $client,
+            )
+        );
+    }
+
     public function import(string $realm, ClientRepresentation $client): ClientRepresentation
     {
         $this->commandExecutor->executeCommand(

@@ -7,12 +7,13 @@ namespace Fschmtt\Keycloak\Http;
 use Fschmtt\Keycloak\Client\ClientInterface;
 use Fschmtt\Keycloak\Json\JsonEncoder;
 use Fschmtt\Keycloak\Representation\Representation;
+use Psr\Http\Message\ResponseInterface;
 
 class CommandExecutor
 {
     public function __construct(
         private readonly ClientInterface $client,
-        private readonly PropertyFilter $propertyFilter
+        private readonly PropertyFilter $propertyFilter,
     ) {
     }
 
@@ -29,6 +30,21 @@ class CommandExecutor
             ]
         );
     }
+
+    public function executeCommandWithResponse(Command $command): ResponseInterface
+    {
+        return $this->client->request(
+            $command->getMethod()->value,
+            $command->getPath(),
+            [
+                'body' => $this->prepareBody($command),
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+            ]
+        );
+    }
+
 
     protected function prepareBody(Command $command): ?string
     {
